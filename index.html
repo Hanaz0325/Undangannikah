@@ -225,7 +225,7 @@ h2 {
   
 
 <audio id="bg-music" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_c3c1e8ffdb.mp3?filename=jawa.mp3" type="audio/mpeg" />
+  <source src="https://hanaz0325.github.io/Undangannikah/jawa.mp3?filename=jawa.mp3" type="audio/mpeg" />
 </audio>
 
 <button id="music-toggle" class="btn" style="position: fixed; bottom: 0px; right: 10px; z-index: 1000;">
@@ -326,12 +326,23 @@ h2 {
     <section class="fade-in scroll-fade"><h2>Konfirmasi Kehadiran</h2>
       <input type="text" placeholder="Nama Anda">
       <input type="text" placeholder="Konfirmasi Kehadiran (Hadir/Tidak)">
-      <button class="btn" onclick="alert('Terima kasih atas konfirmasi Anda!')">Kirim</button>
+      <button class="btn" onclick="kirimKehadiran()">Kirim</button>
+<div id="list-kehadiran" style="margin-top: 20px; text-align: left;"></div><div id="attendanceList" style="margin-top:20px; text-align:left; max-width:400px; margin-inline:auto;">
+  <h4>Daftar Kehadiran:</h4>
+  <ul id="attendanceUl" style="list-style:none; padding-left:0;"></ul>
+  <button id="toggleAttendance" class="btn" style="display:none;">Lihat Semua</button>
+</div>
     </section>
 
     <section class="fade-in scroll-fade"><h2>Komentar</h2>
       <textarea placeholder="Tulis doa atau ucapan..." rows="4"></textarea>
-      <button class="btn" onclick="alert('Terima kasih!')">Kirim</button>
+      <button class="btn" onclick="kirimKomentar()">Kirim</button>
+<div id="list-komentar" style="margin-top: 20px; text-align: left;"></div>
+      <div id="commentList" style="margin-top:20px; text-align:left; max-width:400px; margin-inline:auto;">
+  <h4>Ucapan & Doa:</h4>
+  <ul id="commentUl" style="list-style:none; padding-left:0;"></ul>
+  <button id="toggleComments" class="btn" style="display:none;">Lihat Semua</button>
+</div>
     </section>
     
 
@@ -429,6 +440,33 @@ h2 {
     "Bersamamu, segala sesuatunya menjadi indah.",
     "Hidupku sempurna karena kamu di dalamnya."
   ];
+  function kirimKehadiran() {
+  const nama = document.querySelector('input[placeholder="Nama Anda"]').value;
+  const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value;
+  if (nama && status) {
+    const list = document.getElementById('list-kehadiran');
+    const item = document.createElement('div');
+    item.innerHTML = `<strong>${nama}</strong>: ${status}`;
+    list.prepend(item); // tampilkan paling atas
+    document.querySelector('input[placeholder="Nama Anda"]').value = '';
+    document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value = '';
+  } else {
+    alert('Mohon isi nama dan konfirmasi kehadiran.');
+  }
+}
+
+function kirimKomentar() {
+  const komentar = document.querySelector('textarea[placeholder="Tulis doa atau ucapan..."]').value;
+  if (komentar) {
+    const list = document.getElementById('list-komentar');
+    const item = document.createElement('div');
+    item.innerHTML = `<p style="background:#fff;padding:10px;border-radius:10px;margin-top:10px;">${komentar}</p>`;
+    list.prepend(item); // tampilkan paling atas
+    document.querySelector('textarea[placeholder="Tulis doa atau ucapan..."]').value = '';
+  } else {
+    alert('Mohon isi doa atau ucapan.');
+  }
+}
   const box = document.getElementById('quoteBox');
   box.innerText = quotes[Math.floor(Math.random() * quotes.length)];
 function bagikanUndangan() {
@@ -442,7 +480,66 @@ function bagikanUndangan() {
         alert('Fitur berbagi tidak didukung di browser ini.');
       }
 }
-  
+  const attendanceData = [];
+const commentData = [];
+const attendanceUl = document.getElementById('attendanceUl');
+const commentUl = document.getElementById('commentUl');
+const toggleAttendanceBtn = document.getElementById('toggleAttendance');
+const toggleCommentBtn = document.getElementById('toggleComments');
+
+function updateList(ul, data, limit = 5, full = false) {
+  ul.innerHTML = '';
+  const itemsToShow = full ? data : data.slice(-limit);
+  itemsToShow.forEach(item => {
+    const li = document.createElement('li');
+    li.style.borderBottom = '1px solid #ddd';
+    li.style.padding = '5px 0';
+    li.innerHTML = item;
+    ul.appendChild(li);
+  });
+}
+
+function handleAttendanceSubmit() {
+  const name = document.querySelector('input[placeholder="Nama Anda"]').value.trim();
+  const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value.trim();
+  if (name && status) {
+    attendanceData.push(`<strong>${name}</strong>: ${status}`);
+    updateList(attendanceUl, attendanceData);
+    toggleAttendanceBtn.style.display = attendanceData.length > 5 ? 'inline-block' : 'none';
+    alert('Terima kasih atas konfirmasi Anda!');
+  } else {
+    alert('Mohon isi nama dan kehadiran.');
+  }
+}
+
+function handleCommentSubmit() {
+  const text = document.querySelector('textarea').value.trim();
+  if (text) {
+    commentData.push(text);
+    updateList(commentUl, commentData);
+    toggleCommentBtn.style.display = commentData.length > 5 ? 'inline-block' : 'none';
+    alert('Terima kasih!');
+  } else {
+    alert('Mohon isi komentar.');
+  }
+}
+
+document.querySelector('section input + input + button').onclick = handleAttendanceSubmit;
+document.querySelector('section textarea + button').onclick = handleCommentSubmit;
+
+let showAllAttendance = false;
+toggleAttendanceBtn.onclick = () => {
+  showAllAttendance = !showAllAttendance;
+  updateList(attendanceUl, attendanceData, 5, showAllAttendance);
+  toggleAttendanceBtn.textContent = showAllAttendance ? 'Tampilkan Lebih Sedikit' : 'Lihat Semua';
+};
+
+let showAllComments = false;
+toggleCommentBtn.onclick = () => {
+  showAllComments = !showAllComments;
+  updateList(commentUl, commentData, 5, showAllComments);
+  toggleCommentBtn.textContent = showAllComments ? 'Tampilkan Lebih Sedikit' : 'Lihat Semua';
+};
   </script>
 
 </div>
