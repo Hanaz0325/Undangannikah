@@ -22,7 +22,10 @@
   background: url('foto1.jpg') center center / cover no-repeat;
   position: relative;
 }
-
+a.btn[target="_blank"] {
+  position: relative;
+  z-index: 2; /* pastikan tombol tidak tertutup */
+}
 .hero-text {
   position: absolute;
   bottom: 20%;
@@ -222,7 +225,7 @@ h2 {
   
 
   <audio id="bg-music" autoplay loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_c3c1e8ffdb.mp3?filename=romantic-piano-1129.mp3" type="audio/mpeg" />
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_c3c1e8ffdb.mp3?filename=jawa.mp3" type="audio/mpeg" />
   Browser Anda tidak mendukung elemen audio.
 </audio>
 
@@ -304,8 +307,9 @@ h2 {
   <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Raihan+dan+Nazwa&dates=20250701T030000Z/20250701T060000Z&details=Undangan+pernikahan&location=Gedung+Serbaguna,+Kota+Bahagia" class="btn" target="_blank">📅 Tambahkan ke Google Calendar</a>
 </div>
     <section class="fade-in scroll-fade"><h2>Kisah Kami</h2>
-      <p>Kami pertama kali bertemu di kampus saat kegiatan organisasi...</p>
-    </section>
+  <p>Kami pertama kali bertemu di kampus saat kegiatan organisasi...</p>
+  <img src="https://i.imgur.com/ITrwzLy.jpeg" alt="Kisah Kami" style="margin-top: 20px; width: 100%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+</section>
 
     <section class="fade-in scroll-fade"><h2>Susunan Acara</h2>
       <div class="timeline-container">
