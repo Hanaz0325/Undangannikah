@@ -220,6 +220,9 @@ h2 {
       color: #666;
     }
   </style>
+  <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
 <body>
   
@@ -376,6 +379,19 @@ h2 {
     
 
   <script>
+  // Ganti dengan konfigurasi Firebase milikmu
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
   function showInvitation() {
   
   const intro = document.getElementById('intro');
@@ -440,6 +456,19 @@ h2 {
     "Bersamamu, segala sesuatunya menjadi indah.",
     "Hidupku sempurna karena kamu di dalamnya."
   ];
+  function handleAttendanceSubmit() {
+  const name = document.querySelector('input[placeholder="Nama Anda"]').value.trim();
+  const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value.trim();
+  if (name && status) {
+    const newRef = db.ref('kehadiran').push();
+    newRef.set({ nama: name, status: status });
+    alert('Terima kasih atas konfirmasi Anda!');
+    document.querySelector('input[placeholder="Nama Anda"]').value = '';
+    document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value = '';
+  } else {
+    alert('Mohon isi nama dan kehadiran.');
+  }
+}
   function kirimKehadiran() {
   const nama = document.querySelector('input[placeholder="Nama Anda"]').value;
   const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value;
@@ -454,7 +483,17 @@ h2 {
     alert('Mohon isi nama dan konfirmasi kehadiran.');
   }
 }
-
+function handleCommentSubmit() {
+  const text = document.querySelector('textarea').value.trim();
+  if (text) {
+    const newRef = db.ref('komentar').push();
+    newRef.set({ pesan: text });
+    alert('Terima kasih!');
+    document.querySelector('textarea').value = '';
+  } else {
+    alert('Mohon isi komentar.');
+  }
+}
 function kirimKomentar() {
   const komentar = document.querySelector('textarea[placeholder="Tulis doa atau ucapan..."]').value;
   if (komentar) {
@@ -525,23 +564,4 @@ function handleCommentSubmit() {
 }
 
 document.querySelector('section input + input + button').onclick = handleAttendanceSubmit;
-document.querySelector('section textarea + button').onclick = handleCommentSubmit;
-
-let showAllAttendance = false;
-toggleAttendanceBtn.onclick = () => {
-  showAllAttendance = !showAllAttendance;
-  updateList(attendanceUl, attendanceData, 5, showAllAttendance);
-  toggleAttendanceBtn.textContent = showAllAttendance ? 'Tampilkan Lebih Sedikit' : 'Lihat Semua';
-};
-
-let showAllComments = false;
-toggleCommentBtn.onclick = () => {
-  showAllComments = !showAllComments;
-  updateList(commentUl, commentData, 5, showAllComments);
-  toggleCommentBtn.textContent = showAllComments ? 'Tampilkan Lebih Sedikit' : 'Lihat Semua';
-};
-  </script>
-
-</div>
-</body>
-</html>
+document
