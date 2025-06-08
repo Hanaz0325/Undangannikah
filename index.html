@@ -219,10 +219,8 @@ h2 {
       font-size: 0.9em;
       color: #666;
     }
+  
   </style>
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 </head>
 <body>
   
@@ -326,27 +324,60 @@ h2 {
       <div class="gift-card"><p>BRI - 123456789 a.n. Raihan</p></div>
     </section>
 
-    <section class="fade-in scroll-fade"><h2>Konfirmasi Kehadiran</h2>
-      <input type="text" placeholder="Nama Anda">
-      <input type="text" placeholder="Konfirmasi Kehadiran (Hadir/Tidak)">
-      <button class="btn" onclick="kirimKehadiran()">Kirim</button>
-<div id="list-kehadiran" style="margin-top: 20px; text-align: left;"></div><div id="attendanceList" style="margin-top:20px; text-align:left; max-width:400px; margin-inline:auto;">
-  <h4>Daftar Kehadiran:</h4>
-  <ul id="attendanceUl" style="list-style:none; padding-left:0;"></ul>
-  <button id="toggleAttendance" class="btn" style="display:none;">Lihat Semua</button>
-</div>
-    </section>
+    
+<section class="fade-in scroll-fade">
+  <div class="container" style="max-width:500px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+    <h2>Kirim Ucapan</h2>
+    <p class="subtext">Berikan ucapan harapan dan doa kepada kedua mempelai</p>
+    <div class="counter">💬 <span id="jumlahUcapan">0</span> Ucapan</div>
 
-    <section class="fade-in scroll-fade"><h2>Komentar</h2>
-      <textarea placeholder="Tulis doa atau ucapan..." rows="4"></textarea>
-      <button class="btn" onclick="kirimKomentar()">Kirim</button>
-<div id="list-komentar" style="margin-top: 20px; text-align: left;"></div>
-      <div id="commentList" style="margin-top:20px; text-align:left; max-width:400px; margin-inline:auto;">
-  <h4>Ucapan & Doa:</h4>
-  <ul id="commentUl" style="list-style:none; padding-left:0;"></ul>
-  <button id="toggleComments" class="btn" style="display:none;">Lihat Semua</button>
-</div>
-    </section>
+    <input type="text" id="nama" placeholder="Nama Anda">
+    <select id="status">
+      <option value="">Konfirmasi Kehadiran</option>
+      <option value="Hadir">Hadir</option>
+      <option value="Tidak Hadir">Tidak Hadir</option>
+    </select>
+    <textarea id="ucapan" placeholder="Tulis ucapan" rows="3"></textarea>
+    <button class="btn" onclick="kirimRSVP()">Kirim</button>
+
+    <div id="listUcapan"></div>
+  </div>
+</section>
+<script>
+let dataUcapan = [];
+
+function kirimRSVP() {
+  const nama = document.getElementById("nama").value.trim();
+  const status = document.getElementById("status").value.trim();
+  const ucapan = document.getElementById("ucapan").value.trim();
+
+  if (!nama || !status || !ucapan) {
+    alert("Mohon lengkapi semua kolom.");
+    return;
+  }
+
+  const waktu = new Date().toLocaleString("id-ID", { hour: '2-digit', minute: '2-digit' });
+  const inisial = nama.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+
+  const itemHTML = `
+    <div class="comment" style="border-top:1px solid #eee;padding:10px 0;">
+      <span class="badge" style="display:inline-block;width:32px;height:32px;border-radius:50%;background:#ffd700;color:#000;text-align:center;line-height:32px;font-weight:bold;margin-right:8px;">${inisial}</span>
+      <strong>${nama} <span class="verified" style="color:green;font-size:16px;margin-left:4px;">✔️</span></strong>
+      <p>${ucapan}</p>
+      <span class="time" style="display:block;color:#999;font-size:12px;margin-top:4px;">${status} • ${waktu}</span>
+    </div>
+  `;
+
+  dataUcapan.unshift(itemHTML);
+  document.getElementById("listUcapan").innerHTML = dataUcapan.join("");
+  document.getElementById("jumlahUcapan").textContent = dataUcapan.length;
+
+  document.getElementById("nama").value = "";
+  document.getElementById("status").value = "";
+  document.getElementById("ucapan").value = "";
+}
+</script>
+
     
 
     <section class="fade-in scroll-fade"><h2>Album Pernikahan</h2>
@@ -368,7 +399,9 @@ h2 {
         <span>📤</span> Bagikan Undangan
       </a>
     </div>
-    </section>
+    
+
+
     <section class="parallax-thanks">
   <h2>Terima Kasih</h2>
   <p>Kami tunggu kehadiranmu yang penuh berkah.</p>
@@ -379,19 +412,6 @@ h2 {
     
 
   <script>
-  // Ganti dengan konfigurasi Firebase milikmu
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
   function showInvitation() {
   
   const intro = document.getElementById('intro');
@@ -456,19 +476,6 @@ const db = firebase.database();
     "Bersamamu, segala sesuatunya menjadi indah.",
     "Hidupku sempurna karena kamu di dalamnya."
   ];
-  function handleAttendanceSubmit() {
-  const name = document.querySelector('input[placeholder="Nama Anda"]').value.trim();
-  const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value.trim();
-  if (name && status) {
-    const newRef = db.ref('kehadiran').push();
-    newRef.set({ nama: name, status: status });
-    alert('Terima kasih atas konfirmasi Anda!');
-    document.querySelector('input[placeholder="Nama Anda"]').value = '';
-    document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value = '';
-  } else {
-    alert('Mohon isi nama dan kehadiran.');
-  }
-}
   function kirimKehadiran() {
   const nama = document.querySelector('input[placeholder="Nama Anda"]').value;
   const status = document.querySelector('input[placeholder="Konfirmasi Kehadiran (Hadir/Tidak)"]').value;
@@ -483,17 +490,7 @@ const db = firebase.database();
     alert('Mohon isi nama dan konfirmasi kehadiran.');
   }
 }
-function handleCommentSubmit() {
-  const text = document.querySelector('textarea').value.trim();
-  if (text) {
-    const newRef = db.ref('komentar').push();
-    newRef.set({ pesan: text });
-    alert('Terima kasih!');
-    document.querySelector('textarea').value = '';
-  } else {
-    alert('Mohon isi komentar.');
-  }
-}
+
 function kirimKomentar() {
   const komentar = document.querySelector('textarea[placeholder="Tulis doa atau ucapan..."]').value;
   if (komentar) {
@@ -564,4 +561,17 @@ function handleCommentSubmit() {
 }
 
 document.querySelector('section input + input + button').onclick = handleAttendanceSubmit;
-document
+document.querySelector('section textarea + button').onclick = handleCommentSubmit;
+
+let showAllAttendance = false;
+toggleAttendanceBtn.onclick = () => {
+  showAllAttendance = !showAllAttendance;
+  updateList(attendanceUl, attendanceData, 5, showAllAttendance);
+  toggleAttendanceBtn.textContent = showAllAttendance ? 'Tampilkan Lebih Sedikit' : 'Lihat Semua';
+};
+
+let showAllComments = false;
+toggleCommentBtn.onclick = () => {
+  showAllComments = !showAllComments;
+  updateList(commentUl, commentData, 5, showAllComments);
+  toggleCommentBtn.textContent = showAllCom
