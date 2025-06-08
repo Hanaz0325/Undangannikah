@@ -224,10 +224,9 @@ h2 {
 <body>
   
 
-  <audio autoplay loop controls id="bg-music">
-  <source src="jawa.mp3" type="audio/mpeg">
-  Browser Anda tidak mendukung pemutar audio.
-  </audio>
+<audio id="bg-music" autoplay loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_c3c1e8ffdb.mp3?filename=jawa.mp3" type="audio/mpeg" />
+</audio>
 
 <button id="music-toggle" class="btn" style="position: fixed; bottom: 0px; right: 10px; z-index: 1000;">
   ⏸️ 
@@ -334,6 +333,7 @@ h2 {
       <textarea placeholder="Tulis doa atau ucapan..." rows="4"></textarea>
       <button class="btn">Kirim</button>
     </section>
+    
 
     <section class="fade-in scroll-fade"><h2>Album Pernikahan</h2>
       <div class="album">
@@ -366,21 +366,25 @@ h2 {
 
   <script>
   function showInvitation() {
-    const intro = document.getElementById('intro');
-    const invitation = document.getElementById('invitation');
-    intro.style.display = 'none';
-    invitation.classList.remove('hidden');
+  const intro = document.getElementById('intro');
+  const invitation = document.getElementById('invitation');
+  intro.style.display = 'none';
+  invitation.classList.remove('hidden');
 
-    // Tampilkan hanya elemen awal tanpa class scroll-fade
-    const nonScrollElements = invitation.querySelectorAll('.fade-in:not(.scroll-fade)');
-    nonScrollElements.forEach((el, i) => {
-      setTimeout(() => {
-        el.classList.add('visible');
-      }, i * 200);
-    });
+  const music = document.getElementById('bg-music');
+  music.play().catch(err => {
+    console.log('Autoplay gagal: ', err);
+  });
 
-    window.scrollTo(0, 0);
-  }
+  const nonScrollElements = invitation.querySelectorAll('.fade-in:not(.scroll-fade)');
+  nonScrollElements.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.add('visible');
+    }, i * 200);
+  });
+
+  window.scrollTo(0, 0);
+}
 
   function countdown() {
     const countDate = new Date('2025-07-01T10:00:00').getTime();
@@ -436,7 +440,8 @@ function bagikanUndangan() {
       } else {
         alert('Fitur berbagi tidak didukung di browser ini.');
       }
-    }
+}
+  
   </script>
 
 </div>
