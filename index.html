@@ -224,7 +224,7 @@ h2 {
 <body>
   
 
-<audio id="bg-music" autoplay loop>
+<audio id="bg-music" loop>
   <source src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_c3c1e8ffdb.mp3?filename=jawa.mp3" type="audio/mpeg" />
 </audio>
 
@@ -326,12 +326,12 @@ h2 {
     <section class="fade-in scroll-fade"><h2>Konfirmasi Kehadiran</h2>
       <input type="text" placeholder="Nama Anda">
       <input type="text" placeholder="Konfirmasi Kehadiran (Hadir/Tidak)">
-      <button class="btn">Kirim</button>
+      <button class="btn" onclick="alert('Terima kasih atas konfirmasi Anda!')">Kirim</button>
     </section>
 
     <section class="fade-in scroll-fade"><h2>Komentar</h2>
       <textarea placeholder="Tulis doa atau ucapan..." rows="4"></textarea>
-      <button class="btn">Kirim</button>
+      <button class="btn" onclick="alert('Terima kasih!')">Kirim</button>
     </section>
     
 
@@ -366,6 +366,7 @@ h2 {
 
   <script>
   function showInvitation() {
+  
   const intro = document.getElementById('intro');
   const invitation = document.getElementById('invitation');
   intro.style.display = 'none';
