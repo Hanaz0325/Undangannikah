@@ -387,7 +387,7 @@ window.addEventListener("DOMContentLoaded", () => {
         let html = "";
         let total = 0;
         for (let i = rows.length - 1; i >= 1; i--) {
-          const ucapan = rows[i][0];
+          const ucapan = row.substring(row.indexOf(',') + 1);
           const nama = "Tamu " + i;
           const waktu = "";
           const inisial = nama.slice(5, 7).toUpperCase();
